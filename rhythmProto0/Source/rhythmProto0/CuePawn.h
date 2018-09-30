@@ -32,6 +32,9 @@ public:
 	void BeepAction();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void PressedOff();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 		void setOnBeat(const bool &value);
 
 	UPROPERTY(BlueprintReadOnly)

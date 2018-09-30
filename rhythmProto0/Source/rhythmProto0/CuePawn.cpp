@@ -73,11 +73,19 @@ void ACuePawn::BeepAction()
 	{
 		m_pressed = true;
 	}
-	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+	else m_pressed = false;
 
-	m_pressed = false;
+	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+	
 	setOnBeat(false);
 }
+
+void ACuePawn::PressedOff()
+{
+	m_pressed = false;
+}
+
+
 
 void ACuePawn::setOnBeat(const bool & value)
 {
