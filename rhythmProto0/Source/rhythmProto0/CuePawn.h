@@ -19,8 +19,14 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	bool m_pressed = false;
 	UPROPERTY(BlueprintReadOnly)
-	bool m_onBeat = false;
+		bool m_onBeat = false;
+	UPROPERTY(BlueprintReadOnly)
+		int m_numCorrect = 0;
+	UPROPERTY(BlueprintReadOnly)
+		int m_numMissed = 0;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -35,11 +41,16 @@ public:
 	void PressedOff();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-		void setOnBeat(const bool &value);
+	void SetOnBeat(const bool &value);
 
-	UPROPERTY(BlueprintReadOnly)
-		// whether button for beat was pressed
-		bool m_pressed = false;
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void OnBeatEnd();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void ResultScore();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	bool GetPressed()const;
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* visualComponent;
@@ -47,5 +58,5 @@ public:
 		UAudioComponent* audio;
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* music;
-	
+
 };

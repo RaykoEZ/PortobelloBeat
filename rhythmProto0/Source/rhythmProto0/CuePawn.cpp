@@ -41,6 +41,9 @@ ACuePawn::ACuePawn()
 	music->SetupAttachment(RootComponent);
 	// I want the sound to come from slighty in front of the pawn.
 	music->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+	//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
+
+
 }
 
 void ACuePawn::BeginPlay()
@@ -75,9 +78,9 @@ void ACuePawn::BeepAction()
 	}
 	else m_pressed = false;
 
-	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
-	
-	setOnBeat(false);
+	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+
+	SetOnBeat(false);
 }
 
 void ACuePawn::PressedOff()
@@ -85,9 +88,44 @@ void ACuePawn::PressedOff()
 	m_pressed = false;
 }
 
+void ACuePawn::OnBeatEnd()
+{
+
+	if (m_pressed) 
+	{
+		++m_numCorrect;
+		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
+	}
+	else 
+	{
+		++m_numMissed; 
+		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
+	}
+	
+
+	//placeholder event for missed beat
+	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+	PressedOff();
+}
 
 
-void ACuePawn::setOnBeat(const bool & value)
+void ACuePawn::ResultScore()
+{
+	float total = m_numCorrect + m_numMissed;
+	float result = 100*m_numCorrect/total;
+	UE_LOG(LogTemp, Warning, TEXT("Your result - %f, %d correct, %d missed"), result, m_numCorrect,m_numMissed);
+	m_numCorrect = 0;
+	m_numMissed = 0;
+
+}
+
+bool ACuePawn::GetPressed() const
+{
+	return m_pressed;
+}
+
+
+void ACuePawn::SetOnBeat(const bool & value)
 {
 	m_onBeat = value;
 	UE_LOG(LogTemp, Log, TEXT("NOW!"));
