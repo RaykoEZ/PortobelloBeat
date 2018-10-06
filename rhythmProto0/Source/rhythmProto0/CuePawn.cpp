@@ -65,32 +65,55 @@ void ACuePawn::Tick(float DeltaTime)
 void ACuePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Beep", IE_Pressed, this, &ACuePawn::BeepAction);
-
+	PlayerInputComponent->BindAction("Beep", IE_Pressed, this, &ACuePawn::Punch);
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &ACuePawn::Dodge);
 }
 
-void ACuePawn::BeepAction()
+void ACuePawn::Punch()
 {
 	audio->Play();
 	if (m_onBeat)
 	{
-		m_pressed = true;
+		m_punched = true;
 	}
-	else m_pressed = false;
+	else 
+	{ 
+		m_punched = false;
+	}
 
 	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
 
 	SetOnBeat(false);
 }
 
+void ACuePawn::Dodge()
+{
+	audio->Play();
+	if (m_onBeat)
+	{
+		m_dodged = true;
+	}
+	else
+	{
+		m_dodged = false;
+	}
+
+	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+
+	SetOnBeat(false);
+}
 void ACuePawn::PressedOff()
 {
+	//reset all triggers
 	m_pressed = false;
+	m_dodged = false;
+	m_punched = false;
 }
 
 void ACuePawn::OnBeatEnd()
 {
-
+	// you dodge or puch but not both, just in case
+	m_pressed = m_dodged ^ m_punched;
 	if (m_pressed) 
 	{
 		++m_numCorrect;
@@ -111,19 +134,26 @@ void ACuePawn::OnBeatEnd()
 
 void ACuePawn::ResultScore()
 {
-	float total = m_numCorrect + m_numMissed;
-	float result = 100*m_numCorrect/total;
-	UE_LOG(LogTemp, Warning, TEXT("Your result - %f, %d correct, %d missed"), result, m_numCorrect,m_numMissed);
-	m_numCorrect = 0;
-	m_numMissed = 0;
+	UE_LOG(LogTemp, Warning, TEXT("Your result - %f, %d correct, %d missed"), m_score, m_numCorrect,m_numMissed);	
 
 }
 
-bool ACuePawn::GetPressed() const
+bool ACuePawn::OnSessionEnd()
 {
-	return m_pressed;
-}
+	//score = percentage correct
+	float total = m_numCorrect + m_numMissed;
+	m_score = 100 * m_numCorrect / total;
 
+	// stop looping sequencer if target reached
+	if ((int) m_score >= m_targetScore)
+	{
+		//yes, stop looping
+		return true;
+	}
+	ResultScore();
+	//keep looping
+	return false;
+}
 
 void ACuePawn::SetOnBeat(const bool & value)
 {
