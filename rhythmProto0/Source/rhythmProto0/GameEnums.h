@@ -10,7 +10,8 @@ enum class EInputType : uint8
 {
 	PUNCH UMETA(DisplayName = "Punch"),
 	DODGE UMETA(DisplayName = "Dodge"),
-	OTHER UMETA(DisplayName = "Other")
+	OTHER UMETA(DisplayName = "Other"),
+	NONE UMETA(DisplayName = "None")
 };
 
 

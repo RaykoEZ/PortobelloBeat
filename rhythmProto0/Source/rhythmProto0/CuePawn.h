@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GameEnums.h"
 #include "Components/AudioComponent.h"
 #include "CuePawn.generated.h"
 
@@ -37,9 +38,9 @@ protected:
 	//number of keys misplayed
 	UPROPERTY(BlueprintReadOnly)
 		int m_numMissed = 0;
-	// target loop to finish looping
+	// target score to finish looping
 	UPROPERTY(BlueprintReadOnly)
-		int m_targetScore = 60;
+		int m_targetScore = 50;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -59,6 +60,9 @@ public:
 	void SetOnBeat(const bool &value);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void OnBeatBegin();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void OnBeatEnd();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
@@ -76,5 +80,6 @@ public:
 		UAudioComponent* audio;
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* music;
-
+	UPROPERTY(BlueprintReadWrite)
+		FInputEnums m_inputType;
 };
