@@ -8,6 +8,25 @@
 #include "Components/AudioComponent.h"
 #include "CuePawn.generated.h"
 
+
+USTRUCT(BlueprintType)
+struct FAudio
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)	
+	UAudioComponent* punch;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* dodge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* success;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* fail;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* music;
+};
+
+
 UCLASS()
 class RHYTHMPROTO0_API ACuePawn : public APawn
 {
@@ -77,9 +96,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		USceneComponent* visualComponent;
 	UPROPERTY(EditAnywhere)
-		UAudioComponent* audio;
-	UPROPERTY(EditAnywhere)
-		UAudioComponent* music;
+		FAudio m_audio;
 	UPROPERTY(BlueprintReadWrite)
 		FInputEnums m_inputType;
 };

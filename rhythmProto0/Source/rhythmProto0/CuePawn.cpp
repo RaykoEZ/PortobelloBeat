@@ -31,17 +31,36 @@ ACuePawn::ACuePawn()
 	//);
 
 	//soundcue = cue.Object;
-	audio = CreateDefaultSubobject<UAudioComponent>(TEXT("audio"));
-	audio->bAutoActivate = false;
-	audio->SetupAttachment(RootComponent);
+	m_audio.punch = CreateDefaultSubobject<UAudioComponent>(TEXT("punch sound"));
+	m_audio.punch->bAutoActivate = false;
+	m_audio.punch->SetupAttachment(RootComponent);
 	// I want the sound to come from slighty in front of the pawn.
-	audio->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+	m_audio.punch->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
-	music = CreateDefaultSubobject<UAudioComponent>(TEXT("music"));
-	music->bAutoActivate = false;
-	music->SetupAttachment(RootComponent);
+	m_audio.dodge = CreateDefaultSubobject<UAudioComponent>(TEXT("dodge sound"));
+	m_audio.dodge->bAutoActivate = false;
+	m_audio.dodge->SetupAttachment(RootComponent);
 	// I want the sound to come from slighty in front of the pawn.
-	music->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+	m_audio.dodge->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+
+	m_audio.success = CreateDefaultSubobject<UAudioComponent>(TEXT("yes sound"));
+	m_audio.success->bAutoActivate = false;
+	m_audio.success->SetupAttachment(RootComponent);
+	// I want the sound to come from slighty in front of the pawn.
+	m_audio.success->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+
+	m_audio.fail = CreateDefaultSubobject<UAudioComponent>(TEXT("no sound"));
+	m_audio.fail->bAutoActivate = false;
+	m_audio.fail->SetupAttachment(RootComponent);
+	// I want the sound to come from slighty in front of the pawn.
+	m_audio.fail->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+
+
+	m_audio.music = CreateDefaultSubobject<UAudioComponent>(TEXT("music"));
+	m_audio.music->bAutoActivate = false;
+	m_audio.music->SetupAttachment(RootComponent);
+	// I want the sound to come from slighty in front of the pawn.
+	m_audio.music->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 	//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
 	m_inputType.Input = EInputType::NONE;
 
@@ -49,7 +68,7 @@ ACuePawn::ACuePawn()
 
 void ACuePawn::BeginPlay()
 {
-	music->Play();
+	m_audio.music->Play();
 
 	Super::BeginPlay();
 }
@@ -72,7 +91,7 @@ void ACuePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ACuePawn::Punch()
 {
-	audio->Play();
+	m_audio.punch->Play();
 	if (m_onBeat && m_inputType.Input == EInputType::PUNCH)
 	{
 		m_punched = true;
@@ -89,7 +108,7 @@ void ACuePawn::Punch()
 
 void ACuePawn::Dodge()
 {
-	audio->Play();
+	m_audio.dodge->Play();
 	if (m_onBeat && m_inputType.Input == EInputType::DODGE)
 	{
 		m_dodged = true;
@@ -175,7 +194,8 @@ void ACuePawn::OnBeatBegin()
 	}
 	// Randomly prompt for dodge or punch
 	//for now, only PUNCH or DODGE >> 0 or 1, can do more later
-	int value = FMath::RandRange(0, 1);
+	//int value = FMath::RandRange(0, 1);
+	int value = 0;
 	m_inputType.Input = static_cast<EInputType>(value);
 
 	//prompt before input
