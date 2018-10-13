@@ -24,6 +24,7 @@ struct FAudio
 	UAudioComponent* fail;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* music;
+
 };
 
 
@@ -92,6 +93,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool OnSessionEnd();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	/// For forcasting incoming input alone
+	/// _val - what type of cue to play
+	void PlayCue(EInputType _val);
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* visualComponent;

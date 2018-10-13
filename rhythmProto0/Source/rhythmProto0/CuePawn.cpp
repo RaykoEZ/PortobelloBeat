@@ -136,11 +136,13 @@ void ACuePawn::OnBeatEnd()
 	m_pressed = m_dodged ^ m_punched;
 	if (m_pressed) 
 	{
+		m_audio.success->Play();
 		++m_numCorrect;
 		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
 	}
 	else 
 	{
+		m_audio.fail->Play();
 		++m_numMissed; 
 		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
 	}
@@ -167,6 +169,9 @@ bool ACuePawn::OnSessionEnd()
 	// stop looping sequencer if target reached
 	if ((int) m_score >= m_targetScore)
 	{
+
+		//show score and whatever
+		m_audio.success->Play();
 		//yes, stop looping
 		return true;
 	}
@@ -203,12 +208,12 @@ void ACuePawn::OnBeatBegin()
 	{
 		//punch
 		case EInputType::PUNCH:
-		{
+		{			
 			UE_LOG(LogTemp, Warning, TEXT("PUNCH!!!!!"));
 			break;
 		}
 		case EInputType::DODGE:
-		{
+		{			
 			UE_LOG(LogTemp, Warning, TEXT("DODGE!!!"));
 			break;
 		}
@@ -218,3 +223,29 @@ void ACuePawn::OnBeatBegin()
 	SetOnBeat(true);
 }
 
+
+//--------------------------Struct Function
+
+void ACuePawn::PlayCue(EInputType _val)
+{
+
+	switch (_val)
+	{
+		//punch
+	case EInputType::PUNCH:
+	{
+		m_audio.punch->Play();
+		//UE_LOG(LogTemp, Warning, TEXT("PUNCH!!!!!"));
+		break;
+	}
+	case EInputType::DODGE:
+	{
+
+		m_audio.dodge->Play();
+		//UE_LOG(LogTemp, Warning, TEXT("DODGE!!!"));
+		break;
+	}
+	default: break;
+	}
+	//begin to accept player input
+}
