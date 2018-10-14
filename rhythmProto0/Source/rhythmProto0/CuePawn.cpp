@@ -24,6 +24,17 @@ ACuePawn::ACuePawn()
 	visualComponent->SetupAttachment(RootComponent);
 
 
+	// Json test
+	if (m_json.JsonTest()) 
+	{
+		FString data = m_json.m_parsed->GetStringField("exampleString");
+		UE_LOG(LogTemp, Log, TEXT("JSON DATA TEST - %s"), *data );
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
+	}
+
 	//audio cue
 	//USoundCue* soundcue;
 	//ConstructorHelpers::FObjectFinder<USoundCue> cue(

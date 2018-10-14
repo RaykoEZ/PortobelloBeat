@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "GameEnums.h"
+#include "JsonData.h"
 #include "Components/AudioComponent.h"
 #include "CuePawn.generated.h"
 
@@ -34,17 +35,19 @@ class RHYTHMPROTO0_API ACuePawn : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
+	/// Sets default values for this pawn's properties
 	ACuePawn();
 
 protected:
-	// Called when the game starts or when spawned
+	/// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// whether the correct key is played in the current beat
+	/// whether the correct key is played in the current beat
 	bool m_pressed = false;
 
-	// for puching and dodging trigger
+	/// json data for event scripting
+	FJsonData m_json;
+	/// for puching and dodging trigger
 	bool m_dodged = false;
 	bool m_punched = false;
 	// current score
