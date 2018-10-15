@@ -86,7 +86,7 @@ public:
 	void OnBeatBegin();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void OnBeatEnd();
+	bool OnBeatEnd();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void ResultScore();
@@ -96,6 +96,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool OnSessionEnd();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void OnMissed();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone

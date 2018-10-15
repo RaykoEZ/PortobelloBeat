@@ -113,6 +113,15 @@ void ACuePawn::Punch()
 	}
 
 	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+	if(OnBeatEnd())
+	{
+		m_audio.success->Play();
+	}
+	else
+	{
+		m_audio.fail->Play();
+
+	}
 
 	SetOnBeat(false);
 }
@@ -130,6 +139,15 @@ void ACuePawn::Dodge()
 	}
 
 	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+	if (OnBeatEnd())
+	{
+		m_audio.success->Play();
+	}
+	else
+	{
+		m_audio.fail->Play();
+
+	}
 
 	SetOnBeat(false);
 }
@@ -141,27 +159,26 @@ void ACuePawn::PressedOff()
 	m_punched = false;
 }
 
-void ACuePawn::OnBeatEnd()
+bool ACuePawn::OnBeatEnd()
 {
 	// you dodge or puch but not both, just in case
 	m_pressed = m_dodged ^ m_punched;
+	bool ret = false;
 	if (m_pressed) 
 	{
-		m_audio.success->Play();
-		++m_numCorrect;
+		ret = true;
 		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
 	}
 	else 
 	{
-		m_audio.fail->Play();
-		++m_numMissed; 
+		ret = false; 
 		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
 	}
 	
-
 	//placeholder event for missed beat
 	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
-	PressedOff();
+
+	return ret;
 }
 
 
@@ -259,4 +276,21 @@ void ACuePawn::PlayCue(EInputType _val)
 	default: break;
 	}
 	//begin to accept player input
+}
+
+/// Called during end of beat
+void ACuePawn::OnMissed()
+{
+	if(!m_pressed)
+	{
+		// Missed beat if key isn't pressed at the time
+		++m_numMissed;
+		m_audio.fail->Play();
+	}
+	else
+	{
+		++m_numCorrect;
+	}
+	ResultScore();
+	PressedOff();
 }
