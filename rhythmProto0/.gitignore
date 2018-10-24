@@ -20,7 +20,8 @@
 # files if adding them here.
 !/Content/**/*.uasset
 !/Content/**/*.umap
-
+# allow json
+!/Content/**/*.json
 # Allow any files from /RawContent dir.
 # Any file in /RawContent dir will be managed by git lfs.
 !/Raw/**/*
