@@ -5,7 +5,7 @@
 #include "Camera/CameraComponent.h"
 //#include "Runtime/Engine/Classes/Sound/SoundCue.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
-
+#include "Runtime/Core/Public/Misc/Paths.h"
 // Sets default values
 ACuePawn::ACuePawn()
 {
@@ -31,6 +31,18 @@ ACuePawn::ACuePawn()
 		UE_LOG(LogTemp, Log, TEXT("JSON DATA TEST - %s"), *data );
 	}
 	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
+	}
+	//test filename
+	FString filename = "testSequence.json";
+	FString ContentPath = FPaths::ProjectContentDir();
+	if(m_json.JsonInit( ContentPath + "/Data/" + filename, filename))
+	{
+		FString data = m_json.m_parsed->GetStringField("exampleString");
+		UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *data);
+	}
+	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
 	}

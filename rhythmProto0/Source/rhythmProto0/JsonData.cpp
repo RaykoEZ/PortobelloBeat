@@ -28,7 +28,7 @@ bool FJsonData::JsonInit(FString _path, FString _name)
 	
 	m_fileName = _name;
 	m_filePath = _path;
-	FString JsonRaw = "{ \"exampleString\": \"Hello World\" }";
+	FString JsonRaw;
 	if (FPlatformFileManager::Get().GetPlatformFile().FileExists(*m_filePath))
 	{
 		FFileHelper::LoadFileToString(JsonRaw, const_cast<TCHAR*>(*m_filePath));
@@ -39,7 +39,7 @@ bool FJsonData::JsonInit(FString _path, FString _name)
 		return false;
 	}
 
-	TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(JsonRaw);
+	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(*JsonRaw);
 	//deserialize raw
 	if (!FJsonSerializer::Deserialize(JsonReader, m_parsed) || !m_parsed.IsValid())
 	{
