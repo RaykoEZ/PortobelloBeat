@@ -25,6 +25,7 @@ ACuePawn::ACuePawn()
 
 
 	// Json test
+	/*
 	if (m_json.JsonTest()) 
 	{
 		FString data = m_json.m_parsed->GetStringField("exampleString");
@@ -34,24 +35,29 @@ ACuePawn::ACuePawn()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
 	}
+	*/
 	//test filename
 	FString filename = "testSequence.json";
-	FString ContentPath = FPaths::ProjectContentDir();
-	if(m_json.JsonInit( ContentPath + "/Data/" + filename, filename))
+	FString ContentPath = FPaths::ProjectContentDir() + "/Data/";
+	if(m_json.JsonInit( ContentPath + filename, filename))
 	{
-		FString data = m_json.m_parsed->GetStringField("exampleString");
-		UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *data);
+		//FString data = m_json.m_parsed->GetStringField("exampleString");
+		auto arrayData = m_json.m_parsed->GetArrayField("Sequence");
+		//UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *data);
+		// test out json array output
+		for(auto i= arrayData.CreateConstIterator(); i; ++i)
+		{
+			// output A.I sequence for test
+			auto item = arrayData[i.GetIndex()].Get();
+			m_sequence.Add((int)item->AsNumber());
+			UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *item->AsString());
+			//UE_LOG(LogTemp, Log, TEXT("VERIFY SEQUENCE - %s"), *FString::FromInt(m_sequence[i.GetIndex()]));
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
 	}
-
-	//audio cue
-	//USoundCue* soundcue;
-	//ConstructorHelpers::FObjectFinder<USoundCue> cue(
-	//	TEXT("SoundCue'/Game/Dummy/test.test'")
-	//);
 
 	//soundcue = cue.Object;
 	m_audio.punch = CreateDefaultSubobject<UAudioComponent>(TEXT("punch sound"));
@@ -84,7 +90,6 @@ ACuePawn::ACuePawn()
 	m_audio.music->SetupAttachment(RootComponent);
 	// I want the sound to come from slighty in front of the pawn.
 	m_audio.music->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-	//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
 	m_inputType.Input = EInputType::NONE;
 
 }
@@ -124,7 +129,6 @@ void ACuePawn::Punch()
 		m_punched = false;
 	}
 
-	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
 	if(OnBeatEnd())
 	{
 		m_audio.success->Play();
@@ -150,7 +154,6 @@ void ACuePawn::Dodge()
 		m_dodged = false;
 	}
 
-	//UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
 	if (OnBeatEnd())
 	{
 		m_audio.success->Play();
@@ -179,12 +182,12 @@ bool ACuePawn::OnBeatEnd()
 	if (m_pressed) 
 	{
 		ret = true;
-		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
+		
 	}
 	else 
 	{
 		ret = false; 
-		//UE_LOG(LogTemp, Log, TEXT("%d correct, %d missed"), m_numCorrect, m_numMissed);
+		
 	}
 	
 	//placeholder event for missed beat
@@ -275,14 +278,12 @@ void ACuePawn::PlayCue(EInputType _val)
 	case EInputType::PUNCH:
 	{
 		m_audio.punch->Play();
-		//UE_LOG(LogTemp, Warning, TEXT("PUNCH!!!!!"));
 		break;
 	}
 	case EInputType::DODGE:
 	{
 
 		m_audio.dodge->Play();
-		//UE_LOG(LogTemp, Warning, TEXT("DODGE!!!"));
 		break;
 	}
 	default: break;

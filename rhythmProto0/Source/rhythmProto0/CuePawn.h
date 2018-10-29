@@ -64,6 +64,8 @@ protected:
 	// target score to finish looping
 	UPROPERTY(BlueprintReadOnly)
 		int m_targetScore = 50;
+	UPROPERTY(BlueprintReadOnly)
+		TArray<int> m_sequence;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
