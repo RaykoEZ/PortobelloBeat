@@ -63,9 +63,12 @@ protected:
 		int m_numMissed = 0;
 	// target score to finish looping
 	UPROPERTY(BlueprintReadOnly)
-		int m_targetScore = 50;
+		int m_targetScore = 70;
 	UPROPERTY(BlueprintReadOnly)
-		TArray<int> m_sequence;
+		TArray<EInputType> m_sequence;
+	UPROPERTY(BlueprintReadOnly)
+		int m_sequenceIdx = 0;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -105,7 +108,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone
 	/// _val - what type of cue to play
-	void PlayCue(EInputType _val);
+	void PlayCue();
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* visualComponent;

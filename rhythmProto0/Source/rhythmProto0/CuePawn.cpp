@@ -49,9 +49,12 @@ ACuePawn::ACuePawn()
 		{
 			// output A.I sequence for test
 			auto item = arrayData[i.GetIndex()].Get();
-			m_sequence.Add((int)item->AsNumber());
-			UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *item->AsString());
-			//UE_LOG(LogTemp, Log, TEXT("VERIFY SEQUENCE - %s"), *FString::FromInt(m_sequence[i.GetIndex()]));
+			m_sequence.Add(static_cast<EInputType>((int)item->AsNumber()));
+			//UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *item->AsString());
+		}
+		for(auto i = m_sequence.CreateConstIterator(); i; ++i)
+		{
+			UE_LOG(LogTemp, Log, TEXT("VERIFY SEQUENCE - %d"), static_cast<int>(m_sequence[i.GetIndex()]));
 		}
 	}
 	else
@@ -172,6 +175,11 @@ void ACuePawn::PressedOff()
 	m_pressed = false;
 	m_dodged = false;
 	m_punched = false;
+	if (m_sequenceIdx > m_sequence.Num()-1)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("reset sequence index"));
+		m_sequenceIdx = 0;
+	}
 }
 
 bool ACuePawn::OnBeatEnd()
@@ -181,13 +189,11 @@ bool ACuePawn::OnBeatEnd()
 	bool ret = false;
 	if (m_pressed) 
 	{
-		ret = true;
-		
+		ret = true;	
 	}
 	else 
 	{
-		ret = false; 
-		
+		ret = false; 	
 	}
 	
 	//placeholder event for missed beat
@@ -232,19 +238,8 @@ void ACuePawn::SetOnBeat(const bool & value)
 void ACuePawn::OnBeatBegin()
 {
 	//maximum value of enum class EInputType
-	int range = static_cast<int>(EInputType::NONE);
-	
-	//out of range error checking
-	if (static_cast<int>(m_inputType.Input) > range)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Input Type Enum out of range"));
-		return;
-	}
-	// Randomly prompt for dodge or punch
-	//for now, only PUNCH or DODGE >> 0 or 1, can do more later
-	//int value = FMath::RandRange(0, 1);
-	int value = 0;
-	m_inputType.Input = static_cast<EInputType>(value);
+	m_inputType.Input = m_sequence[m_sequenceIdx];
+	++m_sequenceIdx;
 
 	//prompt before input
 	switch(m_inputType.Input)
@@ -267,12 +262,10 @@ void ACuePawn::OnBeatBegin()
 }
 
 
-//--------------------------Struct Function
-
-void ACuePawn::PlayCue(EInputType _val)
+void ACuePawn::PlayCue()
 {
-
-	switch (_val)
+	EInputType val = m_sequence[m_sequenceIdx];
+	switch (val)
 	{
 		//punch
 	case EInputType::PUNCH:
@@ -304,6 +297,6 @@ void ACuePawn::OnMissed()
 	{
 		++m_numCorrect;
 	}
-	ResultScore();
+	//ResultScore();
 	PressedOff();
 }
