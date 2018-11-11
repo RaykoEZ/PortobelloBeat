@@ -42,6 +42,10 @@ protected:
 	/// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void SetOnBeat(const bool &value);
+
 	/// whether the correct key is played in the current beat
 	bool m_pressed = false;
 
@@ -82,10 +86,7 @@ public:
 	void Dodge();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void PressedOff();
-
-	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void SetOnBeat(const bool &value);
+	void resetState();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void OnBeatBegin();
@@ -95,10 +96,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void ResultScore();
-
-	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool GetPressed()const { return m_pressed; };
-
+	
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool OnSessionEnd();
 
@@ -110,8 +108,19 @@ public:
 	/// _val - what type of cue to play
 	void PlayCue();
 
-	UPROPERTY(EditAnywhere)
-		USceneComponent* visualComponent;
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+
+	void StartUp();
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	bool GetPressed() const { return m_pressed; };
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	bool GetOnBeat() const { return m_onBeat; };
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	int GetInputType() const { return static_cast<int>(m_inputType.Input); }
+
 	UPROPERTY(EditAnywhere)
 		FAudio m_audio;
 	UPROPERTY(BlueprintReadWrite)

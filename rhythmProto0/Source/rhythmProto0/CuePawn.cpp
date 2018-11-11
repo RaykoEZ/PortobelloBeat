@@ -16,34 +16,19 @@ ACuePawn::ACuePawn()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	// Create a camera and a visible object
 	UCameraComponent* cam = CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
-	visualComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("visible component"));
 	// Attach our camera and visible object to our root component. Offset and rotate the camera.
 	cam->SetupAttachment(RootComponent);
 	cam->SetRelativeLocation(FVector(-250.0f, 0.0f, 250.0f));
 	cam->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	visualComponent->SetupAttachment(RootComponent);
 
 
 	// Json test
-	/*
-	if (m_json.JsonTest()) 
-	{
-		FString data = m_json.m_parsed->GetStringField("exampleString");
-		UE_LOG(LogTemp, Log, TEXT("JSON DATA TEST - %s"), *data );
-	}
-	else 
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
-	}
-	*/
 	//test filename
 	FString filename = "testSequence.json";
 	FString ContentPath = FPaths::ProjectContentDir() + "/Data/";
 	if(m_json.JsonInit( ContentPath + filename, filename))
 	{
-		//FString data = m_json.m_parsed->GetStringField("exampleString");
 		auto arrayData = m_json.m_parsed->GetArrayField("Sequence");
-		//UE_LOG(LogTemp, Log, TEXT("JSON PATH TEST - %s"), *data);
 		// test out json array output
 		for(auto i= arrayData.CreateConstIterator(); i; ++i)
 		{
@@ -169,12 +154,13 @@ void ACuePawn::Dodge()
 
 	SetOnBeat(false);
 }
-void ACuePawn::PressedOff()
+void ACuePawn::resetState()
 {
 	//reset all triggers
 	m_pressed = false;
 	m_dodged = false;
 	m_punched = false;
+	m_inputType.Input = EInputType::NONE;
 	if (m_sequenceIdx > m_sequence.Num()-1)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("reset sequence index"));
@@ -237,10 +223,6 @@ void ACuePawn::SetOnBeat(const bool & value)
 
 void ACuePawn::OnBeatBegin()
 {
-	//maximum value of enum class EInputType
-	m_inputType.Input = m_sequence[m_sequenceIdx];
-	++m_sequenceIdx;
-
 	//prompt before input
 	switch(m_inputType.Input)
 	{
@@ -264,7 +246,9 @@ void ACuePawn::OnBeatBegin()
 
 void ACuePawn::PlayCue()
 {
+	
 	EInputType val = m_sequence[m_sequenceIdx];
+
 	switch (val)
 	{
 		//punch
@@ -284,6 +268,12 @@ void ACuePawn::PlayCue()
 	//begin to accept player input
 }
 
+void ACuePawn::StartUp()
+{
+	m_inputType.Input = m_sequence[m_sequenceIdx];
+	++m_sequenceIdx;
+}
+
 /// Called during end of beat
 void ACuePawn::OnMissed()
 {
@@ -298,5 +288,5 @@ void ACuePawn::OnMissed()
 		++m_numCorrect;
 	}
 	//ResultScore();
-	PressedOff();
+	resetState();
 }
