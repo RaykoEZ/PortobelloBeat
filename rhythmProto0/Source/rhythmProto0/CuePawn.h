@@ -106,7 +106,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone
 	/// _val - what type of cue to play
-	void PlayCue();
+	void PlayCue(const EInputType &_in);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 

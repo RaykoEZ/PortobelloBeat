@@ -244,12 +244,12 @@ void ACuePawn::OnBeatBegin()
 }
 
 
-void ACuePawn::PlayCue()
+void ACuePawn::PlayCue(const EInputType &_in) 
 {
 	
-	EInputType val = m_sequence[m_sequenceIdx];
+	//EInputType val = m_sequence[m_sequenceIdx];
 
-	switch (val)
+	switch (_in)
 	{
 		//punch
 	case EInputType::PUNCH:
@@ -271,6 +271,7 @@ void ACuePawn::PlayCue()
 void ACuePawn::StartUp()
 {
 	m_inputType.Input = m_sequence[m_sequenceIdx];
+	//UE_LOG(LogTemp, Warning, TEXT("Getting Input index: %d"), m_sequenceIdx);
 	++m_sequenceIdx;
 }
 
