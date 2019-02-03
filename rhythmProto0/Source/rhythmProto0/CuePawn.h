@@ -100,8 +100,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool OnSessionEnd();
 
+	///@return true - player has missed this beat
+	///@return false - player played this beat correctly
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void OnMissed();
+	bool OnMissed();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone

@@ -14,12 +14,6 @@ ACuePawn::ACuePawn()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 	// Create a dummy root component we can attach things to.
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-	// Create a camera and a visible object
-	UCameraComponent* cam = CreateDefaultSubobject<UCameraComponent>(TEXT("camera"));
-	// Attach our camera and visible object to our root component. Offset and rotate the camera.
-	cam->SetupAttachment(RootComponent);
-	cam->SetRelativeLocation(FVector(-250.0f, 0.0f, 250.0f));
-	cam->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
 
 
 	// Json test
@@ -276,18 +270,22 @@ void ACuePawn::StartUp()
 }
 
 /// Called during end of beat
-void ACuePawn::OnMissed()
+bool ACuePawn::OnMissed()
 {
+	bool ret;
 	if(!m_pressed)
 	{
 		// Missed beat if key isn't pressed at the time
 		++m_numMissed;
 		m_audio.fail->Play();
+		ret = true;
 	}
 	else
 	{
 		++m_numCorrect;
+		ret = false;
 	}
 	//ResultScore();
 	resetState();
+	return ret;
 }
