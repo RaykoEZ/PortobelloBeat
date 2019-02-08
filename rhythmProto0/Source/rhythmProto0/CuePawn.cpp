@@ -74,6 +74,15 @@ ACuePawn::ACuePawn()
 	m_audio.music->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 	m_inputType.Input = EInputType::NONE;
 
+	m_isFrameOpen = false;
+	m_dodged = false;
+	m_punched = false;
+	m_isCorrect = false;
+	m_score = 0.0f;
+	m_numCorrect = 0;
+	m_numMissed = 0;
+	m_targetScore = 70;
+	m_sequenceIdx = 0;
 }
 
 void ACuePawn::BeginPlay()
@@ -95,14 +104,14 @@ void ACuePawn::Tick(float DeltaTime)
 void ACuePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Beep", IE_Pressed, this, &ACuePawn::Punch);
-	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &ACuePawn::Dodge);
+	PlayerInputComponent->BindAction("Beep", IE_Pressed, this, &ACuePawn::punch);
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &ACuePawn::dodge);
 }
 
-void ACuePawn::Punch()
+void ACuePawn::punch()
 {
 	m_audio.punch->Play();
-	if (m_onBeat && m_inputType.Input == EInputType::PUNCH)
+	if (m_isFrameOpen && m_inputType.Input == EInputType::PUNCH)
 	{
 		m_punched = true;
 	}
@@ -111,7 +120,7 @@ void ACuePawn::Punch()
 		m_punched = false;
 	}
 
-	if(OnBeatEnd())
+	if(isInputCorrect())
 	{
 		m_audio.success->Play();
 	}
@@ -121,13 +130,13 @@ void ACuePawn::Punch()
 
 	}
 
-	SetOnBeat(false);
+	setIsFrameOpen(false);
 }
 
-void ACuePawn::Dodge()
+void ACuePawn::dodge()
 {
 	m_audio.dodge->Play();
-	if (m_onBeat && m_inputType.Input == EInputType::DODGE)
+	if (m_isFrameOpen && m_inputType.Input == EInputType::DODGE)
 	{
 		m_dodged = true;
 	}
@@ -136,7 +145,7 @@ void ACuePawn::Dodge()
 		m_dodged = false;
 	}
 
-	if (OnBeatEnd())
+	if (isInputCorrect())
 	{
 		m_audio.success->Play();
 	}
@@ -146,12 +155,12 @@ void ACuePawn::Dodge()
 
 	}
 
-	SetOnBeat(false);
+	setIsFrameOpen(false);
 }
 void ACuePawn::resetState()
 {
 	//reset all triggers
-	m_pressed = false;
+	m_isCorrect = false;
 	m_dodged = false;
 	m_punched = false;
 	m_inputType.Input = EInputType::NONE;
@@ -162,12 +171,12 @@ void ACuePawn::resetState()
 	}
 }
 
-bool ACuePawn::OnBeatEnd()
+bool ACuePawn::isInputCorrect()
 {
 	// you dodge or puch but not both, just in case
-	m_pressed = m_dodged ^ m_punched;
+	m_isCorrect = m_dodged ^ m_punched;
 	bool ret = false;
-	if (m_pressed) 
+	if (m_isCorrect)
 	{
 		ret = true;	
 	}
@@ -177,19 +186,19 @@ bool ACuePawn::OnBeatEnd()
 	}
 	
 	//placeholder event for missed beat
-	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_pressed ? TEXT("true") : TEXT("false")));
+	UE_LOG(LogTemp, Log, TEXT("Key pressed? - %s"), (m_isCorrect ? TEXT("true") : TEXT("false")));
 
 	return ret;
 }
 
 
-void ACuePawn::ResultScore()
+void ACuePawn::result()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Your result - %f, %d correct, %d missed"), m_score, m_numCorrect,m_numMissed);	
 
 }
 
-bool ACuePawn::OnSessionEnd()
+bool ACuePawn::onGameEnd()
 {
 	//score = percentage correct
 	float total = m_numCorrect + m_numMissed;
@@ -204,18 +213,18 @@ bool ACuePawn::OnSessionEnd()
 		//yes, stop looping
 		return true;
 	}
-	ResultScore();
+	result();
 	//keep looping
 	return false;
 }
 
-void ACuePawn::SetOnBeat(const bool & value)
+void ACuePawn::setIsFrameOpen(const bool & value)
 {
-	m_onBeat = value;
+	m_isFrameOpen = value;
 	UE_LOG(LogTemp, Log, TEXT("NOW!"));
 }
 
-void ACuePawn::OnBeatBegin()
+void ACuePawn::onBeatBegin()
 {
 	//prompt before input
 	switch(m_inputType.Input)
@@ -234,11 +243,11 @@ void ACuePawn::OnBeatBegin()
 		default: break;
 	}
 	//begin to accept player input
-	SetOnBeat(true);
+	setIsFrameOpen(true);
 }
 
 
-void ACuePawn::PlayCue(const EInputType &_in) 
+void ACuePawn::playCue(const EInputType &_in) 
 {
 	
 	//EInputType val = m_sequence[m_sequenceIdx];
@@ -262,7 +271,7 @@ void ACuePawn::PlayCue(const EInputType &_in)
 	//begin to accept player input
 }
 
-void ACuePawn::StartUp()
+void ACuePawn::startUp()
 {
 	m_inputType.Input = m_sequence[m_sequenceIdx];
 	//UE_LOG(LogTemp, Warning, TEXT("Getting Input index: %d"), m_sequenceIdx);
@@ -270,10 +279,10 @@ void ACuePawn::StartUp()
 }
 
 /// Called during end of beat
-bool ACuePawn::OnMissed()
+bool ACuePawn::onMissed()
 {
 	bool ret;
-	if(!m_pressed)
+	if(!m_isCorrect)
 	{
 		// Missed beat if key isn't pressed at the time
 		++m_numMissed;
@@ -285,7 +294,7 @@ bool ACuePawn::OnMissed()
 		++m_numCorrect;
 		ret = false;
 	}
-	//ResultScore();
+	//Result();
 	resetState();
 	return ret;
 }

@@ -44,34 +44,34 @@ protected:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void SetOnBeat(const bool &value);
+	void setIsFrameOpen(const bool &value);
 
 	/// whether the correct key is played in the current beat
-	bool m_pressed = false;
+	bool m_isCorrect;
 
 	/// json data for event scripting
 	FJsonData m_json;
 	/// for puching and dodging trigger
-	bool m_dodged = false;
-	bool m_punched = false;
+	bool m_dodged;
+	bool m_punched;
 	// current score
-	float m_score = 0.0f;
+	float m_score;
 
 	UPROPERTY(BlueprintReadOnly)
-		bool m_onBeat = false;
+		bool m_isFrameOpen;
 	// number of correct keys played
 	UPROPERTY(BlueprintReadOnly)
-		int m_numCorrect = 0;
+		int m_numCorrect;
 	//number of keys misplayed
 	UPROPERTY(BlueprintReadOnly)
-		int m_numMissed = 0;
+		int m_numMissed;
 	// target score to finish looping
 	UPROPERTY(BlueprintReadOnly)
-		int m_targetScore = 70;
+		int m_targetScore;
 	UPROPERTY(BlueprintReadOnly)
 		TArray<EInputType> m_sequence;
 	UPROPERTY(BlueprintReadOnly)
-		int m_sequenceIdx = 0;
+		int m_sequenceIdx;
 
 public:	
 	// Called every frame
@@ -81,47 +81,47 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//beep action
-	void Punch();
+	void punch();
 
-	void Dodge();
+	void dodge();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void resetState();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void OnBeatBegin();
+	void onBeatBegin();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool OnBeatEnd();
+	bool isInputCorrect();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void ResultScore();
+	void result();
 	
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool OnSessionEnd();
+	bool onGameEnd();
 
 	///@return true - player has missed this beat
 	///@return false - player played this beat correctly
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool OnMissed();
+	bool onMissed();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone
 	/// _val - what type of cue to play
-	void PlayCue(const EInputType &_in);
+	void playCue(const EInputType &_in);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 
-	void StartUp();
+	void startUp();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool GetPressed() const { return m_pressed; };
+	bool isCorrect() const { return m_isCorrect; };
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool GetOnBeat() const { return m_onBeat; };
+	bool isInputFrameOpen() const { return m_isFrameOpen; };
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	int GetInputType() const { return static_cast<int>(m_inputType.Input); }
+	int getInputType() const { return static_cast<int>(m_inputType.Input); }
 
 	UPROPERTY(EditAnywhere)
 		FAudio m_audio;
