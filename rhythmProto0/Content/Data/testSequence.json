@@ -1,7 +1,4 @@
 { 
     "exampleString": "Hello World",
-    "Sequence": [0,0,0,1,1,1,0,1],
-    "Punch Damage": 10,
-    "Super Punch Damage": 20,
-    "Strength Increase": [1.0,1.5,1.7,1.8,2.0,3.0]
+    "Sequence": [1,1,1,0,0,0,0,1]
 }
