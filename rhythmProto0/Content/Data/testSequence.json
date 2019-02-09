@@ -1,4 +1,4 @@
 { 
     "exampleString": "Hello World",
-    "Sequence": [1,1,1,0,0,0,0,1]
+    "Sequence": [1,0,1,0,0,0,0,1]
 }

@@ -271,7 +271,7 @@ void ACuePawn::playCue(const EInputType &_in)
 	//begin to accept player input
 }
 
-void ACuePawn::startUp()
+void ACuePawn::incrementInputIndex()
 {
 	m_inputType.Input = m_sequence[m_sequenceIdx];
 	//UE_LOG(LogTemp, Warning, TEXT("Getting Input index: %d"), m_sequenceIdx);
@@ -295,6 +295,5 @@ bool ACuePawn::onMissed()
 		ret = false;
 	}
 	//Result();
-	resetState();
 	return ret;
 }

@@ -112,7 +112,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 
-	void startUp();
+	void incrementInputIndex();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool isCorrect() const { return m_isCorrect; };
