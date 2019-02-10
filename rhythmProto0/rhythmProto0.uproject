@@ -16,7 +16,7 @@
 	"Plugins": [
 		{
 			"Name": "Niagara",
-			"Enabled": true
+			"Enabled": false
 		}
 	]
 }
