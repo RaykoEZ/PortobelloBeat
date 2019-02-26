@@ -110,7 +110,7 @@ void ACuePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ACuePawn::punch()
 {
-	m_audio.punch->Play();
+	//m_audio.punch->Play();
 	if (m_isFrameOpen && m_inputType.Input == EInputType::PUNCH)
 	{
 		m_punched = true;
@@ -135,7 +135,7 @@ void ACuePawn::punch()
 
 void ACuePawn::dodge()
 {
-	m_audio.dodge->Play();
+	//m_audio.dodge->Play();
 	if (m_isFrameOpen && m_inputType.Input == EInputType::DODGE)
 	{
 		m_dodged = true;
