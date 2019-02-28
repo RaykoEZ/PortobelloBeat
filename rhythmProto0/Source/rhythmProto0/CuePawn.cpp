@@ -15,7 +15,7 @@ ACuePawn::ACuePawn()
 	// Create a dummy root component we can attach things to.
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-
+	/*
 	// Json test
 	//test filename
 	FString filename = "testSequence.json";
@@ -40,7 +40,7 @@ ACuePawn::ACuePawn()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Data parse failed"));
 	}
-
+	*/
 	//soundcue = cue.Object;
 	m_audio.punch = CreateDefaultSubobject<UAudioComponent>(TEXT("punch sound"));
 	m_audio.punch->bAutoActivate = false;
@@ -53,6 +53,12 @@ ACuePawn::ACuePawn()
 	m_audio.dodge->SetupAttachment(RootComponent);
 	// I want the sound to come from slighty in front of the pawn.
 	m_audio.dodge->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+
+	m_audio.dodge2 = CreateDefaultSubobject<UAudioComponent>(TEXT("dodge2 sound"));
+	m_audio.dodge2->bAutoActivate = false;
+	m_audio.dodge2->SetupAttachment(RootComponent);
+	// I want the sound to come from slighty in front of the pawn.
+	m_audio.dodge2->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
 	m_audio.success = CreateDefaultSubobject<UAudioComponent>(TEXT("yes sound"));
 	m_audio.success->bAutoActivate = false;
@@ -72,8 +78,8 @@ ACuePawn::ACuePawn()
 	m_audio.music->SetupAttachment(RootComponent);
 	// I want the sound to come from slighty in front of the pawn.
 	m_audio.music->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-	m_inputType.Input = EInputType::NONE;
-
+	m_inputType.Input.Reserve(3);
+	m_inputType.Input.Add(EInputType::NONE);
 	m_isFrameOpen = false;
 	m_dodged = false;
 	m_punched = false;
@@ -82,7 +88,7 @@ ACuePawn::ACuePawn()
 	m_numCorrect = 0;
 	m_numMissed = 0;
 	m_targetScore = 70;
-	m_sequenceIdx = 0;
+
 }
 
 void ACuePawn::BeginPlay()
@@ -111,7 +117,9 @@ void ACuePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ACuePawn::punch()
 {
 	//m_audio.punch->Play();
-	if (m_isFrameOpen && m_inputType.Input == EInputType::PUNCH)
+	/// our punching input includes:
+	bool punchInput = m_inputType.Input[0] == EInputType::PUNCH || m_inputType.Input[0] == EInputType::PUNCH2;
+	if (m_isFrameOpen && punchInput)
 	{
 		m_punched = true;
 	}
@@ -136,7 +144,9 @@ void ACuePawn::punch()
 void ACuePawn::dodge()
 {
 	//m_audio.dodge->Play();
-	if (m_isFrameOpen && m_inputType.Input == EInputType::DODGE)
+	/// our dodging input includes:
+	bool dodgeInput = m_inputType.Input[0] == EInputType::DODGE || m_inputType.Input[0] == EInputType::DODGE2;
+	if (m_isFrameOpen && dodgeInput)
 	{
 		m_dodged = true;
 	}
@@ -163,12 +173,12 @@ void ACuePawn::resetState()
 	m_isCorrect = false;
 	m_dodged = false;
 	m_punched = false;
-	m_inputType.Input = EInputType::NONE;
-	if (m_sequenceIdx > m_sequence.Num()-1)
+	m_inputType.Input.RemoveAt(0);
+	if(m_inputType.Input.Num()<=0)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("reset sequence index"));
-		m_sequenceIdx = 0;
+		m_inputType.Input.Add(EInputType::NONE);
 	}
+
 }
 
 bool ACuePawn::isInputCorrect()
@@ -227,7 +237,7 @@ void ACuePawn::setIsFrameOpen(const bool & value)
 void ACuePawn::onBeatBegin()
 {
 	//prompt before input
-	switch(m_inputType.Input)
+	switch(m_inputType.Input[0])
 	{
 		//punch
 		case EInputType::PUNCH:
@@ -250,8 +260,6 @@ void ACuePawn::onBeatBegin()
 void ACuePawn::playCue(const EInputType &_in) 
 {
 	
-	//EInputType val = m_sequence[m_sequenceIdx];
-
 	switch (_in)
 	{
 		//punch
@@ -266,16 +274,40 @@ void ACuePawn::playCue(const EInputType &_in)
 		m_audio.dodge->Play();
 		break;
 	}
+	case EInputType::DODGE2: 
+	{
+		m_audio.dodge2->Play();
+	}
 	default: break;
 	}
 	//begin to accept player input
 }
 
-void ACuePawn::incrementInputIndex()
+void ACuePawn::setInputIndex(const EInputType &_in)
 {
-	m_inputType.Input = m_sequence[m_sequenceIdx];
-	//UE_LOG(LogTemp, Warning, TEXT("Getting Input index: %d"), m_sequenceIdx);
-	++m_sequenceIdx;
+	
+	switch (_in)
+	{
+		//punch
+	case EInputType::PUNCH:
+	{
+		m_inputType.Input.Insert(_in, 0);
+		break;
+	}
+	case EInputType::DODGE:
+	{
+
+		m_inputType.Input.Insert(_in, 0);
+		break;
+	}
+	case EInputType::DODGE2:
+	{
+		m_inputType.Input.Insert(_in, 0);
+		m_inputType.Input.Insert(_in, 1);
+
+	}
+	default: break;
+	}
 }
 
 /// Called during end of beat

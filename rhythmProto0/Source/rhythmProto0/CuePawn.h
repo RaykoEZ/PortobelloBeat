@@ -20,6 +20,8 @@ struct FAudio
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* dodge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* dodge2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* success;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* fail;
@@ -50,7 +52,7 @@ protected:
 	bool m_isCorrect;
 
 	/// json data for event scripting
-	FJsonData m_json;
+	//FJsonData m_json;
 	/// for puching and dodging trigger
 	bool m_dodged;
 	bool m_punched;
@@ -70,9 +72,10 @@ protected:
 		int m_targetScore;
 	UPROPERTY(BlueprintReadOnly)
 		TArray<EInputType> m_sequence;
-	UPROPERTY(BlueprintReadOnly)
-		int m_sequenceIdx;
-
+	UPROPERTY(EditAnywhere)
+		FAudio m_audio;
+	UPROPERTY(BlueprintReadWrite)
+		FInputEnums m_inputType;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -111,8 +114,7 @@ public:
 	void playCue(const EInputType &_in);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-
-	void incrementInputIndex();
+	void setInputIndex(const EInputType &_in);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool isCorrect() const { return m_isCorrect; };
@@ -121,10 +123,7 @@ public:
 	bool isInputFrameOpen() const { return m_isFrameOpen; };
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	int getInputType() const { return static_cast<int>(m_inputType.Input); }
+	EInputType getInputType() const { return m_inputType.Input[0]; }
 
-	UPROPERTY(EditAnywhere)
-		FAudio m_audio;
-	UPROPERTY(BlueprintReadWrite)
-		FInputEnums m_inputType;
+
 };
