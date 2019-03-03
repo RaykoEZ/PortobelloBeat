@@ -42,23 +42,25 @@ ACuePawn::ACuePawn()
 	}
 	*/
 	//soundcue = cue.Object;
-	m_audio.punch = CreateDefaultSubobject<UAudioComponent>(TEXT("punch sound"));
-	m_audio.punch->bAutoActivate = false;
-	m_audio.punch->SetupAttachment(RootComponent);
-	// I want the sound to come from slighty in front of the pawn.
-	m_audio.punch->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+	m_inputLimit = 3;
+	// setup audio array
+	m_audio.punch.Reserve(m_inputLimit);
+	m_audio.dodge.Reserve(m_inputLimit);
+	for (uint8 i = 0; i< m_inputLimit; ++i)
+	{
+		m_audio.punch.Add(CreateDefaultSubobject<UAudioComponent>(*FString("Punch Sound" + FString::FromInt(i))));
+		m_audio.punch[i]->bAutoActivate = false;
+		//m_audio.punch[i]->SetupAttachment(RootComponent);
+		// I want the sound to come from slighty in front of the pawn.
+		m_audio.punch[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
-	m_audio.dodge = CreateDefaultSubobject<UAudioComponent>(TEXT("dodge sound"));
-	m_audio.dodge->bAutoActivate = false;
-	m_audio.dodge->SetupAttachment(RootComponent);
-	// I want the sound to come from slighty in front of the pawn.
-	m_audio.dodge->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+		m_audio.dodge.Add(CreateDefaultSubobject<UAudioComponent>(*FString("Dodge Sound" + FString::FromInt(i))));
+		m_audio.dodge[i]->bAutoActivate = false;
+		//m_audio.dodge[i]->SetupAttachment(RootComponent);
+		// I want the sound to come from slighty in front of the pawn.
+		m_audio.dodge[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+	}
 
-	m_audio.dodge2 = CreateDefaultSubobject<UAudioComponent>(TEXT("dodge2 sound"));
-	m_audio.dodge2->bAutoActivate = false;
-	m_audio.dodge2->SetupAttachment(RootComponent);
-	// I want the sound to come from slighty in front of the pawn.
-	m_audio.dodge2->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
 	m_audio.success = CreateDefaultSubobject<UAudioComponent>(TEXT("yes sound"));
 	m_audio.success->bAutoActivate = false;
@@ -118,7 +120,7 @@ void ACuePawn::punch()
 {
 	//m_audio.punch->Play();
 	/// our punching input includes:
-	bool punchInput = m_inputType.Input[0] == EInputType::PUNCH || m_inputType.Input[0] == EInputType::PUNCH2;
+	bool punchInput = m_inputType.Input[0] == EInputType::PUNCH;
 	if (m_isFrameOpen && punchInput)
 	{
 		m_punched = true;
@@ -145,7 +147,7 @@ void ACuePawn::dodge()
 {
 	//m_audio.dodge->Play();
 	/// our dodging input includes:
-	bool dodgeInput = m_inputType.Input[0] == EInputType::DODGE || m_inputType.Input[0] == EInputType::DODGE2;
+	bool dodgeInput = m_inputType.Input[0] == EInputType::DODGE;
 	if (m_isFrameOpen && dodgeInput)
 	{
 		m_dodged = true;
@@ -256,55 +258,62 @@ void ACuePawn::onBeatBegin()
 	setIsFrameOpen(true);
 }
 
-
-void ACuePawn::playCue(const EInputType &_in) 
+/// input _i can be 1 to limit
+void ACuePawn::playCue(const EInputType &_in, const uint8 &_i)
 {
-	
+	// if arg for number of inputs are too high, we error out
+	if (_i == 0 ||_i > m_inputLimit)
+	{ 
+		return; 
+	}
+
 	switch (_in)
 	{
 		//punch
 	case EInputType::PUNCH:
 	{
-		m_audio.punch->Play();
+		m_audio.punch[_i-1]->Play();
 		break;
 	}
 	case EInputType::DODGE:
 	{
 
-		m_audio.dodge->Play();
+		m_audio.dodge[_i-1]->Play();
 		break;
-	}
-	case EInputType::DODGE2: 
-	{
-		m_audio.dodge2->Play();
 	}
 	default: break;
 	}
 	//begin to accept player input
 }
 
-void ACuePawn::setInputIndex(const EInputType &_in)
+void ACuePawn::setInputIndex(const EInputType &_in, const uint8 &_i)
 {
-	
+	// if arg for number of inputs are too high, we error out
+	if (_i == 0 || _i > m_inputLimit)
+	{
+		return;
+	}
+	// we push our input calls onto an array to allow triple or more repetitive input calls
 	switch (_in)
 	{
 		//punch
 	case EInputType::PUNCH:
 	{
-		m_inputType.Input.Insert(_in, 0);
+		for (uint8 i = 0; i < _i; ++i) 
+		{
+			m_inputType.Input.Insert(_in, 0);
+		}
+		
 		break;
 	}
 	case EInputType::DODGE:
 	{
-
-		m_inputType.Input.Insert(_in, 0);
+		for (uint8 i = 0; i < _i; ++i)
+		{
+			m_inputType.Input.Insert(_in, 0);
+		}
+		
 		break;
-	}
-	case EInputType::DODGE2:
-	{
-		m_inputType.Input.Insert(_in, 0);
-		m_inputType.Input.Insert(_in, 1);
-
 	}
 	default: break;
 	}

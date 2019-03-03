@@ -16,11 +16,9 @@ struct FAudio
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	
-	UAudioComponent* punch;
+	TArray<UAudioComponent*> punch;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAudioComponent* dodge;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAudioComponent* dodge2;
+	TArray<UAudioComponent*> dodge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* success;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -56,6 +54,7 @@ protected:
 	/// for puching and dodging trigger
 	bool m_dodged;
 	bool m_punched;
+	uint8 m_inputLimit;
 	// current score
 	float m_score;
 
@@ -111,10 +110,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone
 	/// _val - what type of cue to play
-	void playCue(const EInputType &_in);
+	void playCue(const EInputType &_in, const uint8 &_i);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void setInputIndex(const EInputType &_in);
+	void setInputIndex(const EInputType &_in, const uint8 &_i);
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool isCorrect() const { return m_isCorrect; };
