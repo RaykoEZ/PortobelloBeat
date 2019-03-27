@@ -59,22 +59,30 @@ protected:
 	float m_score;
 
 	UPROPERTY(BlueprintReadOnly)
-		bool m_isFrameOpen;
+	bool m_isFrameOpen;
 	// number of correct keys played
 	UPROPERTY(BlueprintReadOnly)
-		int m_numCorrect;
-	//number of keys misplayed
+	int m_numCorrect;
+	/// number of inputs correctly input in a row
 	UPROPERTY(BlueprintReadOnly)
-		int m_numMissed;
+	int m_succStreak;
+	/// stores the highest succ streak
+	UPROPERTY(BlueprintReadOnly)
+	int m_highestStreak;
+	/// total number of input in a section
+	/// extendable to be for the entire game , will decide on that later
+	UPROPERTY(BlueprintReadOnly)
+	int m_numInput;
 	// target score to finish looping
 	UPROPERTY(BlueprintReadOnly)
-		int m_targetScore;
+	float m_targetScore;
+
 	UPROPERTY(BlueprintReadOnly)
-		TArray<EInputType> m_sequence;
+	TArray<EInputType> m_sequence;
 	UPROPERTY(EditAnywhere)
-		FAudio m_audio;
+	FAudio m_audio;
 	UPROPERTY(BlueprintReadWrite)
-		FInputEnums m_inputType;
+	FInputEnums m_inputType;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -87,12 +95,14 @@ public:
 
 	void dodge();
 
+	void setHighestStreak(const int &_streak);
+
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void resetState();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void onBeatBegin();
-
+	/// checks if input was correct and sets m_isCorrect for later use to handle missed inputs 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool isInputCorrect();
 
@@ -105,7 +115,7 @@ public:
 	///@return true - player has missed this beat
 	///@return false - player played this beat correctly
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	bool onMissed();
+	bool endOfInputChecks();
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	/// For forcasting incoming input alone
@@ -124,5 +134,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	EInputType getInputType() const { return m_inputType.Input[0]; }
 
+	/// This resets score and its total score factor;
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void resetScore() { m_score = 0.0f; m_numInput = 0; }
 
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	float calculateScore() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	float getScore() const { return m_score; }
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	int getStreak() const { return m_succStreak; }
+
+	
 };

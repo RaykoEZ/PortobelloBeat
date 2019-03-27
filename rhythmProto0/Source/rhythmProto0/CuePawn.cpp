@@ -15,7 +15,7 @@ ACuePawn::ACuePawn()
 	// Create a dummy root component we can attach things to.
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	/*
+	/* not using this
 	// Json test
 	//test filename
 	FString filename = "testSequence.json";
@@ -88,8 +88,9 @@ ACuePawn::ACuePawn()
 	m_isCorrect = false;
 	m_score = 0.0f;
 	m_numCorrect = 0;
-	m_numMissed = 0;
-	m_targetScore = 70;
+	m_targetScore = 0.5f;
+	m_numInput = 0;
+	m_succStreak = 0;
 
 }
 
@@ -169,6 +170,13 @@ void ACuePawn::dodge()
 
 	setIsFrameOpen(false);
 }
+void ACuePawn::setHighestStreak(const int & _streak)
+{
+	if (_streak > m_highestStreak) 
+	{
+		m_highestStreak = _streak;
+	}
+}
 void ACuePawn::resetState()
 {
 	//reset all triggers
@@ -206,18 +214,16 @@ bool ACuePawn::isInputCorrect()
 
 void ACuePawn::result()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Your result - %f, %d correct, %d missed"), m_score, m_numCorrect,m_numMissed);	
+	UE_LOG(LogTemp, Warning, TEXT("Your result : %d correct , accuracy : %f"), m_numCorrect,m_score);	
 
 }
 
 bool ACuePawn::onGameEnd()
 {
-	//score = percentage correct
-	float total = m_numCorrect + m_numMissed;
-	m_score = 100 * m_numCorrect / total;
+	float score = calculateScore();
 
 	// stop looping sequencer if target reached
-	if ((int) m_score >= m_targetScore)
+	if (score > m_targetScore)
 	{
 
 		//show score and whatever
@@ -238,6 +244,7 @@ void ACuePawn::setIsFrameOpen(const bool & value)
 
 void ACuePawn::onBeatBegin()
 {
+	++m_numInput;
 	//prompt before input
 	switch(m_inputType.Input[0])
 	{
@@ -320,21 +327,29 @@ void ACuePawn::setInputIndex(const EInputType &_in, const uint8 &_i)
 }
 
 /// Called during end of beat
-bool ACuePawn::onMissed()
+bool ACuePawn::endOfInputChecks()
 {
 	bool ret;
 	if(!m_isCorrect)
 	{
 		// Missed beat if key isn't pressed at the time
-		++m_numMissed;
+		--m_numCorrect;
+		m_succStreak = 0;
 		m_audio.fail->Play();
 		ret = true;
 	}
 	else
 	{
+		++m_succStreak;
 		++m_numCorrect;
+		setHighestStreak(m_succStreak);
 		ret = false;
 	}
 	//Result();
 	return ret;
+}
+
+float ACuePawn::calculateScore() const 
+{
+	return m_numCorrect / m_numInput;
 }
