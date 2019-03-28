@@ -244,7 +244,7 @@ void ACuePawn::setIsFrameOpen(const bool & value)
 
 void ACuePawn::onBeatBegin()
 {
-	++m_numInput;
+	
 	//prompt before input
 	switch(m_inputType.Input[0])
 	{
@@ -330,10 +330,10 @@ void ACuePawn::setInputIndex(const EInputType &_in, const uint8 &_i)
 bool ACuePawn::endOfInputChecks()
 {
 	bool ret;
+	++m_numInput;
 	if(!m_isCorrect)
 	{
 		// Missed beat if key isn't pressed at the time
-		--m_numCorrect;
 		m_succStreak = 0;
 		m_audio.fail->Play();
 		ret = true;
@@ -342,14 +342,16 @@ bool ACuePawn::endOfInputChecks()
 	{
 		++m_succStreak;
 		++m_numCorrect;
+
 		setHighestStreak(m_succStreak);
 		ret = false;
 	}
 	//Result();
+	m_score = calculateScore();
 	return ret;
 }
 
 float ACuePawn::calculateScore() const 
 {
-	return m_numCorrect / m_numInput;
+	return (float)m_numCorrect / m_numInput;
 }
