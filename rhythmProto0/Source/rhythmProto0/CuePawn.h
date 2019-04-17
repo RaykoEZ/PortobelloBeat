@@ -16,15 +16,29 @@ struct FAudio
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)	
-	TArray<UAudioComponent*> punch;
+	TArray<UAudioComponent*> punchCue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<UAudioComponent*> dodge;
+	TArray<UAudioComponent*> dodgeCue;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAudioComponent* success;
+	TArray<UAudioComponent*> punchSuccess;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAudioComponent* fail;
+	TArray<UAudioComponent*> punchFail;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAudioComponent* music;
+	TArray<UAudioComponent*> dodgeSuccess;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAudioComponent*> dodgeFail;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAudioComponent*> PlayerPositiveGrunt;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAudioComponent*> PlayerNegativeGrunt;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAudioComponent*> EnemyPositiveGrunt;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<UAudioComponent*> EnemyNegativeGrunt;
 
 };
 
