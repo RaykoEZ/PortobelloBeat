@@ -66,7 +66,9 @@ protected:
 	/// json data for event scripting
 	//FJsonData m_json;
 	/// for puching and dodging trigger
+	UPROPERTY(BlueprintReadOnly)
 	bool m_dodged;
+	UPROPERTY(BlueprintReadOnly)
 	bool m_punched;
 	uint8 m_inputLimit;
 	// current score
@@ -105,8 +107,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//beep action
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void punch();
-
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void dodge();
 
 	void setHighestStreak(const int &_streak);
