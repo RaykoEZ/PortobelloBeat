@@ -151,7 +151,7 @@ void ACuePawn::Tick(float DeltaTime)
 void ACuePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Beep", IE_Pressed, this, &ACuePawn::punch);
+	PlayerInputComponent->BindAction("Punch", IE_Pressed, this, &ACuePawn::punch);
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &ACuePawn::dodge);
 }
 
