@@ -53,11 +53,11 @@ ACuePawn::ACuePawn()
 	m_audio.dodgeSuccess.Reserve(m_inputLimit);
 	m_audio.dodgeFail.Reserve(m_inputLimit);
 	
-	m_audio.PlayerPositiveGrunt.Reserve(m_inputLimit);
-	m_audio.PlayerNegativeGrunt.Reserve(m_inputLimit);
+	//m_audio.PlayerPositiveGrunt.Reserve(m_inputLimit);
+	//m_audio.PlayerNegativeGrunt.Reserve(m_inputLimit);
 	
-	m_audio.EnemyPositiveGrunt.Reserve(m_inputLimit);
-	m_audio.EnemyNegativeGrunt.Reserve(m_inputLimit);
+	//m_audio.EnemyPositiveGrunt.Reserve(m_inputLimit);
+	//m_audio.EnemyNegativeGrunt.Reserve(m_inputLimit);
 
 	for (uint8 i = 0; i< m_inputLimit; ++i)
 	{
@@ -95,29 +95,6 @@ ACuePawn::ACuePawn()
 		// I want the sound to come from slighty in front of the pawn.
 		m_audio.dodgeFail[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
-
-
-		m_audio.PlayerPositiveGrunt.Add(CreateDefaultSubobject<UAudioComponent>(*FString("Player Positive Sounds" + FString::FromInt(i))));
-		m_audio.PlayerPositiveGrunt[i]->bAutoActivate = false;
-		// I want the sound to come from slighty in front of the pawn.
-		m_audio.PlayerPositiveGrunt[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-
-		m_audio.PlayerNegativeGrunt.Add(CreateDefaultSubobject<UAudioComponent>(*FString("Player Negative Sounds" + FString::FromInt(i))));
-		m_audio.PlayerNegativeGrunt[i]->bAutoActivate = false;
-		// I want the sound to come from slighty in front of the pawn.
-		m_audio.PlayerNegativeGrunt[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-
-
-
-		m_audio.EnemyPositiveGrunt.Add(CreateDefaultSubobject<UAudioComponent>(*FString("Enemy Positive Sounds" + FString::FromInt(i))));
-		m_audio.EnemyPositiveGrunt[i]->bAutoActivate = false;
-		// I want the sound to come from slighty in front of the pawn.
-		m_audio.EnemyPositiveGrunt[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-
-		m_audio.EnemyNegativeGrunt.Add(CreateDefaultSubobject<UAudioComponent>(*FString("Enemy Negative Sounds" + FString::FromInt(i))));
-		m_audio.EnemyNegativeGrunt[i]->bAutoActivate = false;
-		// I want the sound to come from slighty in front of the pawn.
-		m_audio.EnemyNegativeGrunt[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
 	}
 
@@ -171,11 +148,13 @@ void ACuePawn::punch()
 
 	if(isInputCorrect())
 	{
-		m_audio.punchSuccess[0]->Play();
+		int i = FMath::RandRange(0, m_inputLimit - 1);
+		m_audio.punchSuccess[i]->Play();
 	}
 	else
 	{
-		m_audio.punchFail[0]->Play();
+		int i = FMath::RandRange(0, m_inputLimit - 1);
+		m_audio.punchFail[i]->Play();
 
 	}
 
@@ -198,11 +177,13 @@ void ACuePawn::dodge()
 
 	if (isInputCorrect())
 	{
-		m_audio.dodgeSuccess[0]->Play();
+		int i = FMath::RandRange(0, m_inputLimit - 1);
+		m_audio.dodgeSuccess[i]->Play();
 	}
 	else
 	{
-		m_audio.dodgeFail[0]->Play();
+		int i = FMath::RandRange(0, m_inputLimit - 1);
+		m_audio.dodgeFail[i]->Play();
 
 	}
 
@@ -262,7 +243,6 @@ bool ACuePawn::onGameEnd()
 	// stop looping sequencer if target reached
 	if (score > m_targetScore)
 	{
-
 		//show score and whatever
 		//yes, stop looping
 		return true;

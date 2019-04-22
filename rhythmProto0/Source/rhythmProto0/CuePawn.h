@@ -29,7 +29,7 @@ struct FAudio
 	TArray<UAudioComponent*> dodgeSuccess;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAudioComponent*> dodgeFail;
-
+/*
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAudioComponent*> PlayerPositiveGrunt;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -39,7 +39,7 @@ struct FAudio
 	TArray<UAudioComponent*> EnemyPositiveGrunt;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAudioComponent*> EnemyNegativeGrunt;
-
+*/
 };
 
 
