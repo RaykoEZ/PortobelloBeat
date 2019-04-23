@@ -366,5 +366,10 @@ bool ACuePawn::endOfInputChecks()
 
 float ACuePawn::calculateScore() const 
 {
-	return (float)m_numCorrect / m_numInput;
+	if (m_numInput > 0) 
+	{
+		return (float)m_numCorrect / m_numInput;
+	}
+	return 0.0f;
+	
 }
