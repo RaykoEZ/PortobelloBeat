@@ -29,7 +29,11 @@ struct FAudio
 	TArray<UAudioComponent*> dodgeSuccess;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAudioComponent*> dodgeFail;
-/*
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAudioComponent* finalPunch;
+
+	/*
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UAudioComponent*> PlayerPositiveGrunt;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -73,7 +77,8 @@ protected:
 	uint8 m_inputLimit;
 	// current score
 	float m_score;
-
+	UPROPERTY(BlueprintReadWrite)
+	bool m_isFinalPunch;
 	UPROPERTY(BlueprintReadOnly)
 	bool m_isFrameOpen;
 	// number of correct keys played
@@ -141,6 +146,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	void setInputIndex(const EInputType &_in, const uint8 &_i);
+
+	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
+	void setIsFinalPunch( const bool &_val ) { m_isFinalPunch = _val;}
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	bool isCorrect() const { return m_isCorrect; };

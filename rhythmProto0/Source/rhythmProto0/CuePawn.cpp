@@ -94,13 +94,15 @@ ACuePawn::ACuePawn()
 		m_audio.dodgeFail[i]->bAutoActivate = false;
 		// I want the sound to come from slighty in front of the pawn.
 		m_audio.dodgeFail[i]->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-
-
 	}
+	m_audio.finalPunch = CreateDefaultSubobject<UAudioComponent>(*FString("Final Punch Success "));
+	m_audio.finalPunch->bAutoActivate = false;
+	m_audio.finalPunch->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
 
 	m_inputType.Input.Reserve(3);
 	m_inputType.Input.Add(EInputType::NONE);
 	m_isFrameOpen = false;
+	m_isFinalPunch = false;
 	m_dodged = false;
 	m_punched = false;
 	m_isCorrect = false;
@@ -148,8 +150,15 @@ void ACuePawn::punch()
 
 	if(isInputCorrect())
 	{
-		int i = FMath::RandRange(0, m_inputLimit - 1);
-		m_audio.punchSuccess[i]->Play();
+		if (!m_isFinalPunch) 
+		{
+			int i = FMath::RandRange(0, m_inputLimit - 1);
+			m_audio.punchSuccess[i]->Play();
+		}
+		else 
+		{
+			m_audio.finalPunch->Play();
+		}
 	}
 	else
 	{
