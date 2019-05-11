@@ -155,16 +155,20 @@ void ACuePawn::punch()
 			int i = FMath::RandRange(0, m_inputLimit - 1);
 			m_audio.punchSuccess[i]->Play();
 		}
-		else 
-		{
-			m_audio.finalPunch->Play();
-		}
+
 	}
 	else
 	{
-		int i = FMath::RandRange(0, m_inputLimit - 1);
-		m_audio.punchFail[i]->Play();
-
+		if (!m_isFinalPunch) 
+		{
+			int i = FMath::RandRange(0, m_inputLimit - 1);
+			m_audio.punchFail[i]->Play();
+		}
+		else
+		{
+			/// if player fails final punch, we play a default final beat for the music track, otherwise, we prolong the final note
+			m_audio.finalPunch->Play();
+		}
 	}
 
 	setIsFrameOpen(false);
