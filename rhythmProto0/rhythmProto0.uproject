@@ -17,6 +17,10 @@
 		{
 			"Name": "Niagara",
 			"Enabled": false
+		},
+		{
+			"Name": "HoudiniEngine",
+			"Enabled": true
 		}
 	]
 }
