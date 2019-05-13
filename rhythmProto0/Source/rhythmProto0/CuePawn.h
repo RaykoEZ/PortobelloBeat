@@ -161,7 +161,14 @@ public:
 
 	/// This resets score and its total score factor;
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
-	void resetScore() { m_score = 0.0f; m_numInput = 0; }
+	void resetScore() 
+	{ 
+		m_score = 0.0f; 
+		m_numInput = 0; 
+		m_numCorrect = 0; 
+		m_succStreak = 0;
+		m_highestStreak = 0;
+	}
 
 	UFUNCTION(BlueprintCallable, Category = "Music Trigger")
 	float calculateScore() const;
