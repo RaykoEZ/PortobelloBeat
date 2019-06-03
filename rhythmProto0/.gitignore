@@ -8,7 +8,7 @@
 !/.git*
 
 # Do not ignore current project's `.uproject`.
-!/rhythmProto0.uproject
+!/PortobelloBeat.uproject
 
 # Do not ignore source, config and plugins dirs.
 !/Source/**
