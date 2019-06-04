@@ -9,6 +9,8 @@ ___
 - Oleg Fryazinov
 ___
 
+## Brief Background
+
 This project is a rhythm-based boxing game, inspired by games such as Rhythm Heaven and various fighting games. The overall theme of the game centers around "mushrooms" as the Championship of Porto Bello commences with our earnest warrior - Take, versing against the tyrannical Deathcap - our former champion.
 
 ___
