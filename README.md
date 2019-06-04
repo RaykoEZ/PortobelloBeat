@@ -24,7 +24,7 @@ To build from this repo:
 
 ## Project Build Steps:
 
-1. Download a zip or clone the repository from [this link.](https://github.com/RaykoEZ/PortobelloBeat)
+1. Download a zip or clone the repository from [the GitHub repository.](https://github.com/RaykoEZ/PortobelloBeat)
 2. With extracted zip folder/cloned repository, within "rhythmProto0/", a "PortobelloBeat.uproject" file should exist.
 3. Right-click the .uproject file, select "Generate Visual Studio project files", a .sln should be generated after a moment of waiting.
 4. Now double-click the .uproject file, a notice asking for source code building will appear and choose "Yes" or "Confirm".
