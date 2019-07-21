@@ -34,3 +34,5 @@ To build from this repo:
 ____
 
 For implementation and more detail about the project, please check out the accompanying report.
+
+link to an itch.io hosting the game: https://miguelmadate.itch.io/portobello-beat
